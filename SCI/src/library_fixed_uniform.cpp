@@ -1431,7 +1431,7 @@ void StartComputation() {
   checkIfUsingEigen();
   printf("Doing BaseOT ...\n");
   for (int i = 0; i < num_threads; i++) {
-    ioArr[i] = new sci::NetIO(party == sci::ALICE ? nullptr : address.c_str(),
+    ioArr[i] = new sci::NetIO(party == sci::BOB ? nullptr : address.c_str(),
                               port + i, /*quit*/ true);
     otInstanceArr[i] = new sci::IKNP<sci::NetIO>(ioArr[i]);
     prgInstanceArr[i] = new sci::PRG128();

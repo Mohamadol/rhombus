@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
           "===="
        << endl;
 
-  NetIO *io = new NetIO(party == 1 ? nullptr : address.c_str(), port);
+  NetIO *io = new NetIO(party == 2 ? nullptr : address.c_str(), port);
 
   gemini::HomLinear hom_linear(party, io, prime_mod);
   ElemWiseProd(hom_linear, vec_size);

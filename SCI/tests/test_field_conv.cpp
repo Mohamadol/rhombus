@@ -175,7 +175,7 @@ int main(int argc, char **argv) {
   amap.arg("r", party, "Role of party: ALICE = 1; BOB = 2");
   amap.arg("nt", num_threads, "Number of Threads");
   amap.arg("l", bitlength, "Bitlength");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
   amap.arg("p", port, "Port Number");
   amap.arg("h", image_h, "Image Height/Width");
   amap.arg("f", filter_h, "Filter Height/Width");
@@ -204,7 +204,7 @@ int main(int argc, char **argv) {
   cout << "=================================================================="
        << endl;
 
-  NetIO *io = new NetIO(party == 1 ? nullptr : address.c_str(), port);
+  NetIO *io = new NetIO(party == 2 ? nullptr : address.c_str(), port);
 
   // ConvField he_conv(party, io);
   gemini::HomConv2DSSField he_conv_ss(party, io);

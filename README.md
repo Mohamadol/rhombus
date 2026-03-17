@@ -11,19 +11,30 @@ If you are more interested in the implementation of the algorithms in Rhombus, r
 
 We prefer to compile on Linux OS, and we have successfully compiled it on Ubuntu by executing the following commands.
 
-Run the following command to build the dependencies:
+The build system supports two variants controlled by the `VARIANT` environment variable:
 
-```PowerShell
-bash scripts/build-deps.sh
+- `noavx512` (default) -- portable binaries without AVX-512 instructions
+- `avx512` -- high-performance binaries with AVX-512 code paths for capable CPUs
+
+### Building without AVX-512 (portable)
+
+```bash
+VARIANT=noavx512 bash scripts/build-deps.sh
+VARIANT=noavx512 bash scripts/build.sh
 ```
 
-After building the dependencies successfully, run the following command to build this project:
+Binaries are output to `build-noavx512/bin/`.
 
-```PowerShell
-bash scripts/build.sh
+### Building with AVX-512
+
+```bash
+VARIANT=avx512 bash scripts/build-deps.sh
+VARIANT=avx512 bash scripts/build.sh
 ```
 
-This will generate four executable files.
+Binaries are output to `build-avx512/bin/`.
+
+Both variants can be built side by side -- they use separate build directories and share the same `deps/` source tree.
 
 ## Testing
 
@@ -53,29 +64,31 @@ After setting the network environment, launch two terminals, representing the cl
 
 To test matrix-vector multiplication protocol, execute the following command in the client terminal:
 
-```PowerShell
-./build/bin/rhombus_matvec 2 12345
+```bash
+./build-noavx512/bin/rhombus_matvec 2 12345
 ```
 
 Correspondingly, execute the following command in the server terminal:
 
-```PowerShell
-./build/bin/rhombus_matvec 1 12345
+```bash
+./build-noavx512/bin/rhombus_matvec 1 12345
 ```
 
 The matrix-matrix multiplication protocol can be tested in a similar way as above.
 
 In client terminal:
 
-```PowerShell
-./build/bin/rhombus_matmul 2 12345
+```bash
+./build-noavx512/bin/rhombus_matmul 2 12345
 ```
 
 In server terminal:
 
-```PowerShell
-./build/bin/rhombus_matmul 1 12345
+```bash
+./build-noavx512/bin/rhombus_matmul 1 12345
 ```
+
+Replace `build-noavx512` with `build-avx512` to use the AVX-512 variant.
 
 After running the protocols successfully, the performance data will be printed. The total communication volume of the protocol is the sum of the client's and server's transmitted data. To configure the parameters of the protocol, e.g., the dimensions of the matrices, the number of threads, you can modify the parameters in the  corresponding files, then recompile them.
 

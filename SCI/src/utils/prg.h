@@ -32,12 +32,7 @@ Modified by Deevashwer Rathee
 #include "utils/block.h"
 #include "utils/constants.h"
 // #include <gmp.h>
-#include <random>
-
-#ifdef EMP_USE_RANDOM_DEVICE
-#else
-#include <x86intrin.h>
-#endif
+#include "urandom.h"
 
 /** @addtogroup BP
   @{
@@ -53,17 +48,7 @@ public:
       reseed(seed, id);
     } else {
       block128 v;
-#ifdef EMP_USE_RANDOM_DEVICE
-      int *data = (int *)(&v);
-      std::random_device rand_div;
-      for (size_t i = 0; i < sizeof(block128) / sizeof(int); ++i)
-        data[i] = rand_div();
-#else
-      unsigned long long r0, r1;
-      _rdseed64_step(&r0);
-      _rdseed64_step(&r1);
-      v = makeBlock128(r0, r1);
-#endif
+      urandom_fill(&v, sizeof(v));
       reseed(&v);
     }
   }
@@ -190,19 +175,7 @@ public:
       reseed(seed, id);
     } else {
       alignas(32) block256 v;
-#ifdef EMP_USE_RANDOM_DEVICE
-      int *data = (int *)(&v);
-      std::random_device rand_div;
-      for (size_t i = 0; i < sizeof(block256) / sizeof(int); ++i)
-        data[i] = rand_div();
-#else
-      unsigned long long r0, r1, r2, r3;
-      _rdseed64_step(&r0);
-      _rdseed64_step(&r1);
-      _rdseed64_step(&r2);
-      _rdseed64_step(&r3);
-      v = makeBlock256(r0, r1, r2, r3);
-#endif
+      urandom_fill(&v, sizeof(v));
       reseed(&v);
     }
   }

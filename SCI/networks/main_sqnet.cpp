@@ -2265,7 +2265,7 @@ int main(int argc, char **argv) {
 
   amap.arg("r", party, "Role of party: ALICE/SERVER = 1; BOB/CLIENT = 2");
   amap.arg("p", port, "Port Number");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
   amap.arg("nt", num_threads, "Number of Threads");
   amap.arg("ell", bitlength, "Uniform Bitwidth");
   amap.arg("k", kScale, "scaling factor");

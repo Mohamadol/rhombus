@@ -9,7 +9,7 @@ shared_ptr<RhombusLinear> rhombus_;
 int main(int argc, char **argv)
 {
     sci::parse_party_and_port(argv, &party, &port);
-    auto *io = new sci::NetIO(party == sci::ALICE ? nullptr : "127.0.0.1", port);
+    auto *io = new sci::NetIO(party == sci::BOB ? nullptr : "127.0.0.1", port);
 
     uint32_t nthreads = 4;
     uint32_t ell = 37;

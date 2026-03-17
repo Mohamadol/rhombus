@@ -318,7 +318,7 @@ int main(int argc, char **argv) {
   amap.arg("N", dim, "Number of ReLU operations");
   amap.arg("l", bw, "Bitlength of inputs");
   amap.arg("s", shift, "Bitlength of shift");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
   bw = bitlength;
 
   amap.parse(argc, argv);

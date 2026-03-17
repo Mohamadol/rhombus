@@ -5,6 +5,7 @@
 #include "seal/seal.h"
 #include "seal_api.h"
 #include "matrix.h"
+#include "urandom.h"
 
 namespace antchain::matmul{
 
@@ -1049,7 +1050,7 @@ namespace antchain::matmul{
             auto coeff_modulus_size = coeff_modulus.size();
 
             seal::parms_id_type parms_id = encrypted_matXY[0].parms_id();
-            std::mt19937_64 gen(std::random_device{}());
+            std::mt19937_64 gen(urandom_uint64());
 
             auto gen_rand_pt = [&](seal::Plaintext &plain){
                 plain.parms_id() = seal::parms_id_zero;
@@ -1094,7 +1095,7 @@ namespace antchain::matmul{
             auto coeff_modulus_size = coeff_modulus.size();
 
             seal::parms_id_type parms_id = encrypted_matXY[0].parms_id();
-            std::mt19937_64 gen(std::random_device{}());
+            std::mt19937_64 gen(urandom_uint64());
 
             uint32_t ct_num = encrypted_matXY.size();
 

@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
   amap.arg("Nr", num_rows, "Number of rows");
   amap.arg("Nc", num_cols, "Number of cols");
   amap.arg("bt", batch_size, "Batch size as a power of 2 (No batching = 0)");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
 
   amap.parse(argc, argv);
   prime_mod = sci::default_prime_mod.at(bitlength);
@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
   /********************************************/
 
   for (int i = 0; i < num_threads; i++) {
-    ioArr[i] = new NetIO(party == 1 ? nullptr : address.c_str(), port + i);
+    ioArr[i] = new NetIO(party == 2 ? nullptr : address.c_str(), port + i);
     if (i & 1) {
       otpackArr[i] = new OTPack<NetIO>(ioArr[i], 3 - party);
     } else {

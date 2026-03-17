@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
   amap.arg("n", num_rows, "Rows in Weight Matrix");
   amap.arg("c", common_dim, "Image Length / Columns in Weight Matrix");
   amap.arg("fp", filter_precision, "Filter Precision");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
   amap.arg("l", bitlength, "Bitlength of inputs");
   amap.parse(argc, argv);
   prime_mod = sci::default_prime_mod.at(bitlength);
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
   cout << "===================================================================="
        << endl;
 
-  NetIO *io = new NetIO(party == 1 ? nullptr : address.c_str(), port);
+  NetIO *io = new NetIO(party == 2 ? nullptr : address.c_str(), port);
 
   FCField he_fc(party, io);
 

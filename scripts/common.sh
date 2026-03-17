@@ -39,13 +39,20 @@ function contains {
   return $result
 }
 WORK_DIR=`pwd`
-BUILD_DIR=$WORK_DIR/build
 DEPS_DIR=$WORK_DIR/deps
+
+VARIANT=${VARIANT:-noavx512}
+if [ "$VARIANT" != "avx512" ] && [ "$VARIANT" != "noavx512" ]; then
+  echo -e "${RED}VARIANT must be 'avx512' or 'noavx512' (got '$VARIANT')${NC}"
+  exit 1
+fi
+
+BUILD_DIR=$WORK_DIR/build-$VARIANT
 mkdir -p $BUILD_DIR
 mkdir -p $DEPS_DIR
 
 # change the ip if running remotely
-SERVER_IP=127.0.0.1
+CLIENT_IP=127.0.0.1
 SERVER_PORT=12345
 
 # fixed-point scale

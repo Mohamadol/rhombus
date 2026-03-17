@@ -37,11 +37,11 @@ int main(int argc, char **argv) {
   amap.arg("p", port, "Port Number");
   amap.arg("l", bitlength, "Bitlength of inputs");
   amap.arg("N", num_argmax, "Number of elements");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
 
   amap.parse(argc, argv);
 
-  NetIO *io = new NetIO(party == ALICE ? nullptr : "127.0.0.1", port);
+  NetIO *io = new NetIO(party == BOB ? nullptr : "127.0.0.1", port);
   uint64_t magnitude_bound = (1 << (bitlength - 3));
   uint64_t mask_l = -1ULL;
   if (bitlength != 64) {

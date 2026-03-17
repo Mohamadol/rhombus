@@ -31,7 +31,7 @@ void initialize() {
 
   for (int i = 0; i < num_threads; i++) {
     ioArr[i] =
-        new sci::NetIO(party == sci::ALICE ? nullptr : address.c_str(), port + i);
+        new sci::NetIO(party == sci::BOB ? nullptr : address.c_str(), port + i);
     if (i & 1) {
       otpackArr[i] = new OTPack<sci::NetIO>(ioArr[i], 3 - party);
     } else {

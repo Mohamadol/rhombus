@@ -112,7 +112,7 @@ void s_ext() {
 int main(int argc, char **argv) {
   party = atoi(argv[1]);
 
-  io = new NetIO(party == 1 ? nullptr : "127.0.0.1", port);
+  io = new NetIO(party == 2 ? nullptr : "127.0.0.1", port);
   otpack = new OTPack<NetIO>(io, party);
   ext = new XTProtocol(party, io, otpack);
 

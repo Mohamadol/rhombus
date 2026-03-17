@@ -89,11 +89,11 @@ int main(int argc, char **argv) {
   ArgMapping amap;
   amap.arg("r", party, "Role of party: ALICE = 1; BOB = 2");
   amap.arg("p", port, "Port Number");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
 
   amap.parse(argc, argv);
 
-  io = new NetIO(party == 1 ? nullptr : address.c_str(), port);
+  io = new NetIO(party == 2 ? nullptr : address.c_str(), port);
   otpack = new OTPack<NetIO>(io, party);
 
   prod = new LinearOT(party, io, otpack);

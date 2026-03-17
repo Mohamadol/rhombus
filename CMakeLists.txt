@@ -7,6 +7,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+
 add_compile_options(-fPIC)
 add_compile_options(-D_GLIBCXX_USE_CXX11_ABI=0)
 
@@ -32,7 +35,7 @@ set(SEAL_LIBRARIES ${CMAKE_BINARY_DIR}/deps/SEAL/lib/libseal-3.7.a)
 set(SCI_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/SCI/src/)
 
 ## cheetah-core
-add_library(gemini SHARED)
+add_library(gemini STATIC)
 include_directories(include)
 add_subdirectory(include)
 target_link_libraries(gemini SEAL::seal Eigen3::Eigen Threads::Threads OpenSSL::Crypto)
@@ -61,6 +64,7 @@ macro (add_network_cheetah _name)
   target_include_directories(${_name}-cheetah PUBLIC ${RHOMBUS_INCLUDE_DIRS})
   target_link_libraries(${_name}-cheetah PUBLIC gemini SCI-Cheetah Rhombus)
   target_compile_definitions(${_name}-cheetah PUBLIC SCI_OT=1 USE_CHEETAH=1)
+  target_link_options(${_name}-cheetah PRIVATE -static-libgcc -static-libstdc++)
 endmacro()
 
 macro(add_network_rhombus _name)
@@ -68,9 +72,22 @@ macro(add_network_rhombus _name)
   target_include_directories(${_name}-rhombus PUBLIC ${RHOMBUS_INCLUDE_DIRS})
   target_link_libraries(${_name}-rhombus PUBLIC gemini SCI-Cheetah Rhombus)
   target_compile_definitions(${_name}-rhombus PUBLIC SCI_OT=1 USE_CHEETAH=1 USE_RHOMBUS=1)
+  target_link_options(${_name}-rhombus PRIVATE -static-libgcc -static-libstdc++)
 endmacro()
 
 
 
 add_network_cheetah(resnet50)
 add_network_rhombus(resnet50)
+
+add_network_cheetah(sqnet)
+add_network_rhombus(sqnet)
+
+add_network_cheetah(densenet121)
+add_network_rhombus(densenet121)
+
+add_network_cheetah(vgg11)
+add_network_rhombus(vgg11)
+
+add_network_cheetah(Lenet)
+add_network_rhombus(Lenet)

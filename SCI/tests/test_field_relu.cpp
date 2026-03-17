@@ -159,7 +159,7 @@ int main(int argc, char **argv) {
   /********************************************/
 
   for (int i = 0; i < num_threads; i++) {
-    ioArr[i] = new NetIO(party == 1 ? nullptr : address.c_str(), port + i);
+    ioArr[i] = new NetIO(party == 2 ? nullptr : address.c_str(), port + i);
     if (i & 1) {
       otpackArr[i] = new OTPack<NetIO>(ioArr[i], 3 - party);
     } else {

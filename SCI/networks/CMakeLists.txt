@@ -4,12 +4,14 @@ macro (add_network_OT _name)
   add_executable(${_name}-SCI_OT "main_${_name}.cpp")
   target_link_libraries(${_name}-SCI_OT SCI-OT) 
   target_compile_definitions(${_name}-SCI_OT PUBLIC SCI_OT=1 USE_CHEETAH=0)
+  target_link_options(${_name}-SCI_OT PRIVATE -static-libgcc -static-libstdc++)
 endmacro()
 
 macro (add_network_HE _name)
   add_executable(${_name}-SCI_HE "main_${_name}.cpp")
   target_link_libraries(${_name}-SCI_HE SCI-HE) 
   target_compile_definitions(${_name}-SCI_HE PUBLIC SCI-OT=0 USE_CHEETAH=0)
+  target_link_options(${_name}-SCI_HE PRIVATE -static-libgcc -static-libstdc++)
 endmacro()
 
 # Networks

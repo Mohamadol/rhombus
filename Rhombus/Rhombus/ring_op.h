@@ -5,6 +5,7 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
+#include "urandom.h"
 
 namespace antchain{
 
@@ -22,7 +23,7 @@ namespace antchain{
         if (bits == sizeof(T) * 8)
         {
             auto gen_rand_vec = [&](size_t bgn, size_t end){
-                std::mt19937 gen(std::random_device{}());
+                std::mt19937 gen(urandom_uint32());
                 if (sizeof(T) == 8){ // int64_t
                     std::uniform_int_distribution<T> dist(INT64_MIN, INT64_MAX);
                     std::generate_n(vec + bgn, end - bgn, [&](){return dist(gen);});
@@ -43,7 +44,7 @@ namespace antchain{
         else
         {
             auto gen_rand_vec = [&](size_t bgn, size_t end){
-                std::mt19937 gen(std::random_device{}());
+                std::mt19937 gen(urandom_uint32());
                 std::uniform_int_distribution<T> dist(-(T(1) << (T)(bits - 1)), (T(1) << (T)(bits - 1)) - (T)1);
                 std::generate(vec + bgn, vec + end, [&](){return dist(gen);});
             };
@@ -60,7 +61,7 @@ namespace antchain{
             throw std::invalid_argument("invalid range");
 
         auto gen_rand_vec = [&](size_t bgn, size_t end){
-            std::mt19937 gen(std::random_device{}());
+            std::mt19937 gen(urandom_uint32());
             std::uniform_real_distribution<T> dist(lower_bound, upper_bound);
             std::generate_n(vec + bgn, end - bgn, [&](){return dist(gen);});
         };
@@ -92,7 +93,7 @@ namespace antchain{
             throw std::invalid_argument("bits out of range");
 
         auto gen_rand_vec = [&](size_t bgn, size_t end){
-            std::mt19937 gen(std::random_device{}());
+            std::mt19937 gen(urandom_uint32());
             T upbd = (bits == sizeof(T) * 8) ? static_cast<T>(-1) : ((T)1 << (T)bits) - (T)1;
             std::uniform_int_distribution<T> dist(0, upbd);
             std::generate(vec + bgn, vec + end, [&](){return dist(gen);});

@@ -2,18 +2,18 @@
 
 check_tools
 
-git clone https://github.com/openssl/openssl.git $DEPS_DIR/openssl
-git clone https://github.com/emp-toolkit/emp-tool.git $DEPS_DIR/emp-tool
-git clone https://github.com/emp-toolkit/emp-ot.git $DEPS_DIR/emp-ot
-git clone https://github.com/libigl/eigen.git $DEPS_DIR/eigen
-git clone https://github.com/facebook/zstd.git $DEPS_DIR/zstd
-git clone https://github.com/intel/hexl.git $DEPS_DIR/hexl
-git clone https://github.com/microsoft/SEAL.git $DEPS_DIR/SEAL
+[ -d $DEPS_DIR/openssl ]   || git clone https://github.com/openssl/openssl.git $DEPS_DIR/openssl
+[ -d $DEPS_DIR/emp-tool ]  || git clone https://github.com/emp-toolkit/emp-tool.git $DEPS_DIR/emp-tool
+[ -d $DEPS_DIR/emp-ot ]    || git clone https://github.com/emp-toolkit/emp-ot.git $DEPS_DIR/emp-ot
+[ -d $DEPS_DIR/eigen ]     || git clone https://github.com/libigl/eigen.git $DEPS_DIR/eigen
+[ -d $DEPS_DIR/zstd ]      || git clone https://github.com/facebook/zstd.git $DEPS_DIR/zstd
+[ -d $DEPS_DIR/hexl ]      || git clone https://github.com/intel/hexl.git $DEPS_DIR/hexl
+[ -d $DEPS_DIR/SEAL ]      || git clone https://github.com/microsoft/SEAL.git $DEPS_DIR/SEAL
 
 target=openssl
 cd $DEPS_DIR/$target
 git checkout ac3cef2 # 1.1.1m
-./config --prefix=$BUILD_DIR
+./config --prefix=$BUILD_DIR no-shared no-asm
 make -j8
 make install -j4
 
@@ -21,6 +21,7 @@ target=emp-tool
 cd $DEPS_DIR/$target
 git checkout 44b1dde
 patch --quiet --no-backup-if-mismatch -N -p1 -i $WORK_DIR/patch/emp-tool.patch -d $DEPS_DIR/$target
+sed -i 's/add_library(${NAME} SHARED/add_library(${NAME} STATIC/' $DEPS_DIR/$target/CMakeLists.txt
 mkdir -p $BUILD_DIR/deps/$target
 cd $BUILD_DIR/deps/$target
 cmake $DEPS_DIR/$target -DCMAKE_INSTALL_PREFIX=$BUILD_DIR -DOPENSSL_ROOT_DIR=$BUILD_DIR
@@ -51,7 +52,11 @@ make install -j2
 target=hexl
 cd $DEPS_DIR/$target
 git checkout 343acab #v1.2.2
-cmake $DEPS_DIR/$target -DCMAKE_INSTALL_PREFIX=$BUILD_DIR -DHEXL_BENCHMARK=OFF -DHEXL_COVERAGE=OFF -DHEXL_TESTING=OFF
+if [ "$VARIANT" = "noavx512" ]; then
+  sed -i 's/-march=native/-msse4.1 -maes/' $DEPS_DIR/$target/hexl/CMakeLists.txt
+  sed -i 's/-march=native/-msse4.1 -maes/' $DEPS_DIR/$target/cmake/hexl/hexl-util.cmake
+fi
+cmake $DEPS_DIR/$target -DCMAKE_INSTALL_PREFIX=$BUILD_DIR -DHEXL_BENCHMARK=OFF -DHEXL_COVERAGE=OFF -DHEXL_TESTING=OFF -DBUILD_SHARED_LIBS=OFF
 make install -j2
 
 target=SEAL

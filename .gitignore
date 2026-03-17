@@ -12,4 +12,8 @@ deps/*
 
 # binary file
 build/
+build-*/
 cmake-build-*/
+
+# runtime data
+data/

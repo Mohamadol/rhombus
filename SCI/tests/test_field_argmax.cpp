@@ -36,13 +36,13 @@ int main(int argc, char **argv) {
   amap.arg("r", party, "Role of party: ALICE = 1; BOB = 2");
   amap.arg("p", port, "Port Number");
   amap.arg("N", num_argmax, "Number of elements");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
   amap.arg("l", bitlength, "Bitlength of inputs");
 
   amap.parse(argc, argv);
   uint64_t prime_mod = sci::default_prime_mod.at(bitlength);
 
-  NetIO *io = new NetIO(party == ALICE ? nullptr : address.c_str(), port);
+  NetIO *io = new NetIO(party == BOB ? nullptr : address.c_str(), port);
   uint64_t magnitude_bound = prime_mod / 8;
   OTPack otpack(io, party);
   ArgMaxProtocol<NetIO, uint64_t> argmax_oracle(party, FIELD, io, bitlength,

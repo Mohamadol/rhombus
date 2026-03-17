@@ -161,11 +161,11 @@ int main(int argc, char **argv) {
   amap.arg("N", dim, "Number of ReLU operations");
   amap.arg("l", bw, "Bitlength of inputs");
   amap.arg("s", shift, "Bitlength of shift");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
 
   amap.parse(argc, argv);
 
-  io = new NetIO(party == 1 ? nullptr : address.c_str(), port);
+  io = new NetIO(party == 2 ? nullptr : address.c_str(), port);
   otpack = new OTPack<NetIO>(io, party);
   trunc_oracle = new Truncation(party, io, otpack);
 

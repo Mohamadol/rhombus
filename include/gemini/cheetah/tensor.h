@@ -2,9 +2,11 @@
 #ifndef GEMINI_HE_LINEAR_TENSOR_H
 #define GEMINI_HE_LINEAR_TENSOR_H
 #include <iostream>
+#include <random>
 #include <type_traits>
 
 #include "gemini/core/common.h"
+#include "urandom.h"
 #include "gemini/core/logging.h"
 #include "gemini/core/types.h"
 #include "gemini/core/util/math.h"
@@ -363,7 +365,7 @@ class Tensor {
 
   void Uniform() {
     if (std::is_same<ScalarType, uint64_t>::value) {
-      std::random_device rdv;
+      std::mt19937_64 rdv(urandom_uint64());
       std::uniform_int_distribution<uint64_t> uniform(
           0, static_cast<uint64_t>(-1));
 
@@ -374,7 +376,7 @@ class Tensor {
 
   void Randomize(ScalarType range = 1) {
     SignedScalarType upper = std::abs(static_cast<SignedScalarType>(range));
-    std::random_device rdv;
+    std::mt19937_64 rdv(urandom_uint64());
 
     if (std::is_same<ScalarType, double>::value) {
       SignedScalarType lower = -upper;

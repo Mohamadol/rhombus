@@ -6,6 +6,7 @@
 #include "statusor.h"
 #include "matrix.h"
 #include "seal_api.h"
+#include "urandom.h"
 
 namespace antchain::matvec
 {
@@ -523,7 +524,7 @@ namespace antchain::matvec
             plain.parms_id() = seal::parms_id_zero;
             plain.resize(poly_modulus_degree_ * coeff_modulus_size);
 
-            std::mt19937_64 gen(std::random_device{}());
+            std::mt19937_64 gen(urandom_uint64());
             for (size_t i = 0; i < coeff_modulus_size; ++i){
                 std::uniform_int_distribution<uint64_t> dist(0, coeff_modulus[i].value() - 1);
                 std::generate_n(plain.data() + i * poly_modulus_degree_, poly_modulus_degree_, [&](){

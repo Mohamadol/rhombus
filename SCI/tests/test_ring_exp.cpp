@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
   amap.arg("p", port, "Port Number");
   amap.arg("N", dim, "Number of exponentiations");
   amap.arg("nt", num_threads, "Number of threads");
-  amap.arg("ip", address, "IP Address of server (ALICE)");
+  amap.arg("ip", address, "IP Address of client (BOB)");
 
   amap.parse(argc, argv);
 
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
   /********** Setup IO and Base OTs ***********/
   /********************************************/
   for (int i = 0; i < num_threads; i++) {
-    ioArr[i] = new NetIO(party == 1 ? nullptr : address.c_str(), port + i);
+    ioArr[i] = new NetIO(party == 2 ? nullptr : address.c_str(), port + i);
     if (i & 1) {
       otpackArr[i] = new OTPack<NetIO>(ioArr[i], 3 - party);
     } else {
