@@ -26,6 +26,7 @@ Enquiries about further applications and development opportunities are welcome.
 #define NETWORK_IO_CHANNEL
 
 #include "utils/io_channel.h"
+#include <chrono>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,6 +97,8 @@ public:
       dest.sin_addr.s_addr = inet_addr(address);
       dest.sin_port = htons(port);
 
+      auto connect_start = std::chrono::steady_clock::now();
+      constexpr int connect_timeout_sec = 10;
       while (1) {
         consocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -105,6 +108,15 @@ public:
         }
 
         close(consocket);
+
+        auto elapsed = std::chrono::steady_clock::now() - connect_start;
+        if (elapsed >= std::chrono::seconds(connect_timeout_sec)) {
+          fprintf(stderr,
+                  "[error] failed to connect to client (%s:%d) after %d seconds\n",
+                  address, port, connect_timeout_sec);
+          exit(2);
+        }
+
         usleep(1000);
       }
     }
