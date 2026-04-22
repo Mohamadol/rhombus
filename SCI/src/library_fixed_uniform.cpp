@@ -21,6 +21,7 @@ SOFTWARE.
 */
 
 #include "library_fixed_uniform.h"
+#include "utils/exit_codes.h"
 
 #include "cleartext_library_fixed_uniform.h"
 #include "functionalities_uniform.h"
@@ -1401,6 +1402,7 @@ void ScaleUp(int32_t size, intType *arr, int32_t sf) {
 }
 
 void StartComputation() {
+  sci::install_error_handlers();
   assert(bitlength < 64 && bitlength > 0);
   assert(num_threads <= MAX_THREADS);
 
@@ -2018,6 +2020,7 @@ void ElemWiseSecretSharedVectorMult(int32_t size, intType *inArr,
     delete[] VoutputArr;
   }
 #endif
+  std::cout << "[success] program finished" << std::endl;
 }
 
 void Floor(int32_t s1, intType *inArr, intType *outArr, int32_t sf) {

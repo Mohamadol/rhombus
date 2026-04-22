@@ -25,6 +25,7 @@ Enquiries about further applications and development opportunities are welcome.
 #ifndef NETWORK_IO_CHANNEL
 #define NETWORK_IO_CHANNEL
 
+#include "utils/exit_codes.h"
 #include "utils/io_channel.h"
 #include <chrono>
 #include <iostream>
@@ -79,12 +80,14 @@ public:
                  sizeof(reuse));
       if (::bind(mysocket, (struct sockaddr *)&serv, sizeof(struct sockaddr)) <
           0) {
-        perror("error: bind");
-        exit(1);
+        perror("[error] bind failed");
+        fprintf(stderr, "[error] --> status-code: %d\n", sci::EXIT_BIND_LISTEN_FAILURE);
+        exit(sci::EXIT_BIND_LISTEN_FAILURE);
       }
       if (listen(mysocket, 1) < 0) {
-        perror("error: listen");
-        exit(1);
+        perror("[error] listen failed");
+        fprintf(stderr, "[error] --> status-code: %d\n", sci::EXIT_BIND_LISTEN_FAILURE);
+        exit(sci::EXIT_BIND_LISTEN_FAILURE);
       }
       consocket = accept(mysocket, (struct sockaddr *)&dest, &socksize);
       close(mysocket);
@@ -112,9 +115,10 @@ public:
         auto elapsed = std::chrono::steady_clock::now() - connect_start;
         if (elapsed >= std::chrono::seconds(connect_timeout_sec)) {
           fprintf(stderr,
-                  "[error] failed to connect to client (%s:%d) after %d seconds\n",
-                  address, port, connect_timeout_sec);
-          exit(2);
+                  "[error] failed to connect to client (%s:%d) after %d seconds\n"
+                  "[error] --> status-code: %d\n",
+                  address, port, connect_timeout_sec, sci::EXIT_CONNECT_TIMEOUT);
+          exit(sci::EXIT_CONNECT_TIMEOUT);
         }
 
         usleep(1000);
@@ -168,10 +172,13 @@ public:
     int sent = 0;
     while (sent < len) {
       int res = fwrite(sent + (char *)data, 1, len - sent, stream);
-      if (res >= 0)
+      if (res > 0) {
         sent += res;
-      else
-        fprintf(stderr, "error: net_send_data %d\n", res);
+      } else {
+        fprintf(stderr, "[error] connection lost during send (%d/%d bytes sent)\n"
+                        "[error] --> status-code: %d\n", sent, len, sci::EXIT_CONNECTION_LOST);
+        exit(sci::EXIT_CONNECTION_LOST);
+      }
     }
     has_sent = true;
   }
@@ -187,10 +194,13 @@ public:
     int sent = 0;
     while (sent < len) {
       int res = fread(sent + (char *)data, 1, len - sent, stream);
-      if (res >= 0)
+      if (res > 0) {
         sent += res;
-      else
-        fprintf(stderr, "error: net_send_data %d\n", res);
+      } else {
+        fprintf(stderr, "[error] connection lost during recv (%d/%d bytes received)\n"
+                        "[error] --> status-code: %d\n", sent, len, sci::EXIT_CONNECTION_LOST);
+        exit(sci::EXIT_CONNECTION_LOST);
+      }
     }
   }
 };

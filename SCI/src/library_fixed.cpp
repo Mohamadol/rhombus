@@ -22,11 +22,13 @@ SOFTWARE.
 #include "library_fixed.h"
 #include "globals.h"
 #include "library_fixed_common.h"
+#include "utils/exit_codes.h"
 
 //using namespace std;
 using namespace sci;
 
 void initialize() {
+  sci::install_error_handlers();
   assert(num_threads <= MAX_THREADS);
 
   for (int i = 0; i < num_threads; i++) {
@@ -93,6 +95,7 @@ void finalize() {
 #if USE_CHEETAH
   delete cheetah_linear;
 #endif
+  std::cout << "[success] program finished" << std::endl;
 }
 
 void reconstruct(int64_t *A, int64_t *B, int32_t I, int32_t J, int bwA) {

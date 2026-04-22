@@ -43,3 +43,4 @@ for path in glob.glob('$BUILD_DIR/bin/*'):
     data = data.replace(b'\x0f\xc7\xfa', b'\x31\xd2\xf8')
     with open(path, 'wb') as f: f.write(data)
 "
+echo -e "${GREEN}[success] build finished${NC}"
