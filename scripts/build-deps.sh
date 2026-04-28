@@ -13,6 +13,7 @@ check_tools
 target=openssl
 cd $DEPS_DIR/$target
 git checkout ac3cef2 # 1.1.1m
+make distclean 2>/dev/null; true
 ./config --prefix=$BUILD_DIR no-shared no-asm
 make -j8
 make install -j4
@@ -44,7 +45,8 @@ cmake $DEPS_DIR/$target -DCMAKE_INSTALL_PREFIX=$BUILD_DIR
 make install -j2
 
 target=zstd
-cd $DEPS_DIR/$target
+mkdir -p $BUILD_DIR/deps/$target
+cd $BUILD_DIR/deps/$target
 cmake $DEPS_DIR/$target/build/cmake -DCMAKE_INSTALL_PREFIX=$BUILD_DIR -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_SHARED=OFF\
                                       -DZLIB_BUILD_STATIC=ON -DZSTD_BUILD_TESTS=OFF -DZSTD_MULTITHREAD_SUPPORT=OFF
 make install -j2
@@ -56,7 +58,8 @@ if [ "$VARIANT" = "noavx512" ]; then
   sed -i 's/-march=native/-msse4.1 -maes/' $DEPS_DIR/$target/hexl/CMakeLists.txt
   sed -i 's/-march=native/-msse4.1 -maes/' $DEPS_DIR/$target/cmake/hexl/hexl-util.cmake
 fi
-cmake $DEPS_DIR/$target -DCMAKE_INSTALL_PREFIX=$BUILD_DIR -DHEXL_BENCHMARK=OFF -DHEXL_COVERAGE=OFF -DHEXL_TESTING=OFF -DBUILD_SHARED_LIBS=OFF
+rm -rf CMakeCache.txt CMakeFiles hexl/CMakeFiles
+cmake . -DCMAKE_INSTALL_PREFIX=$BUILD_DIR -DHEXL_BENCHMARK=OFF -DHEXL_COVERAGE=OFF -DHEXL_TESTING=OFF -DBUILD_SHARED_LIBS=OFF
 make install -j2
 
 target=SEAL
